@@ -26,8 +26,16 @@ public class TreeNode {
 // GameBoard
 public class TicTacToMap
 {
+    public enum GameState {
+        WinA = 3,
+        WinB = 4,
+        Draw = 5,
+        Play = 7,
+        Init = 8,
+        Stop = 9
+    }
 
-
+    private Position prePos;        //이전 선택위치 저장
 
 
 

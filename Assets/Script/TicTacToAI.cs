@@ -13,11 +13,6 @@ public class TicTacToAI {
     public TicTacToMap tttBoard;//게임보드
     private int lookAheadLevel; //게임 레벨
     public int LookAheadLevel { get { return lookAheadLevel; } set { lookAheadLevel = value; } }
-    public enum MapNode {
-        None = 0,
-        User = 1,
-        AI = 2
-    } // Node Data enum
     public MapNode mapNode; // Node
 
     private int bestX;  //최적 X 좌표

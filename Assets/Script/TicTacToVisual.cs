@@ -23,10 +23,10 @@ public class TicTacToVisual : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MapUpdate();
+        //MapUpdate();
     }
 
-    void MapUpdate() {
+    void MapUpdate() {        
         for (int x = 0; x < gameMode; x++) {
             for (int y = 0; y < gameMode; y++) {
                 NodeArray[x * 3 + y].GetComponent<TicTacToeGraphicNode>().VisualNode(tictactoGameMap.BoardData[x, y]);                
@@ -34,8 +34,9 @@ public class TicTacToVisual : MonoBehaviour
         }
     }
 
-    public void NodeUpdate(int input, MapNode nodeType) {
-        tictactoGameMap.BoardData[input / gameMode, input % gameMode] = nodeType;
+    public void NodeUpdate(int input, MapNode nodeType) {        
+        tictactoGameMap.InputMove(input, nodeType);
         tictactoGameMap.RandomMove();
+        MapUpdate();
     }
 }

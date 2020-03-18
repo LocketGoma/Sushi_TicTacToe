@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
 public class TreeNode {
@@ -27,6 +24,7 @@ public class TicTacToMap : MonoBehaviour {
         WinUser = 3,        //유저승리
         WinAI = 4,          //AI승리
         Draw = 5,           //비김
+        End = 6,            //그 외 게임 종료
         Play = 7,           //게임진행중
         Init = 8,           //초기화
         Stop = 9            //일시정지
@@ -35,13 +33,13 @@ public class TicTacToMap : MonoBehaviour {
     private Position [] prePos;        //이전 선택위치 저장... 배열이요?
     private MapNode [,] boardData;       //'맵 정보'
     private int moveCount;          //현재 움직일 수 있는 "수" 의 개수
-    private int gamePlayState;      //게임판 상태
+    private GameState gamePlayState;      //게임판 상태
     private int comLevel;           //AI 레벨
     private MapNode nodePlayer;     //플레이어 노드 번호 (판 표시 번호)
     private MapNode nodeAI;         //AI 노드 번호      (판 표시 번호, O/X같은 포지션)
 
     //게임 상태 반환
-    public int GamePlayState { get { return gamePlayState; } }
+    public GameState GamePlayState { get { return gamePlayState; } }
     //게임판 선택 상태 반환
     public MapNode [,] BoardData { get { return boardData; } }
     //게임모드 상태
@@ -54,6 +52,7 @@ public class TicTacToMap : MonoBehaviour {
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;
         gameMode = 3;
+        gamePlayState = GameState.Play;
     }
     //깊-은 복사
     public TicTacToMap(TicTacToMap mapCopy){
@@ -62,6 +61,7 @@ public class TicTacToMap : MonoBehaviour {
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;
         gameMode = 3;
+        gamePlayState = GameState.Init;
 
         boardData = mapCopy.boardData;
         prePos = mapCopy.prePos;
@@ -76,21 +76,26 @@ public class TicTacToMap : MonoBehaviour {
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;
         comLevel = level;
+
+        gamePlayState = GameState.Play;
     }
 
     //무르기용? 일단 임시용으로 만들어줘야지.
     public void RandomMove() {
-        int randomInput = UnityEngine.Random.Range(0, gameMode * gameMode); 
-        
-        
-        while (CheckMove(randomInput) == false) {
-            randomInput = UnityEngine.Random.Range(0, gameMode * gameMode);
-        }
-        InputMove(randomInput, MapNode.AI);
+        if (GamePlayState == GameState.Play) {
+            int randomInput = UnityEngine.Random.Range(0, gameMode * gameMode);
 
+
+            while (CheckMove(randomInput) == false) {
+                randomInput = UnityEngine.Random.Range(0, gameMode * gameMode);
+            }
+            InputMove(randomInput, MapNode.AI);
+        }
     }
     public void InputMove(int input, MapNode selected) {
-        DoMove(input / gameMode, input % gameMode, selected);
+        if (GamePlayState == GameState.Play) {
+            DoMove(input / gameMode, input % gameMode, selected);
+        }        
     }
     private bool CheckMove(int input) {
         return boardData[input / gameMode, input % gameMode] == MapNode.None ? true : false;
@@ -101,8 +106,14 @@ public class TicTacToMap : MonoBehaviour {
        // prePos[moveCount].Y = y;
 
         moveCount++;
+        GameEndCheck();
     }
 
+    private void GameEndCheck() {
+        if (moveCount == GameMode * GameMode) {
+            gamePlayState = GameState.End;
+        }
+    }
     
 }
 

@@ -15,9 +15,7 @@ public class TicTacToeGraphicNode : MonoBehaviour
     public int NodeNumber { get { return nodeNumber; } set { nodeNumber = value; } }
 
     public MapNode SushiNode { get { return sushiNode; } set { sushiNode = value; } }
-    private void Update() {
-        //VisualNode(sushiNode);
-    }
+
     public void Start() {
         ticTacToVisual = transform.parent.gameObject.GetComponent<TicTacToVisual>();
     }
@@ -29,12 +27,15 @@ public class TicTacToeGraphicNode : MonoBehaviour
         } else if (node == MapNode.AI) {
             gameObject.GetComponent<Image>().sprite = nodeSushiImage[2];
         }
-
+        sushiNode = node;
     }
     public void ClickNode() {
-        if (isSelected == false) {
+        Debug.Log(sushiNode);
+        if (isSelected == false && sushiNode == MapNode.None) {
             isSelected = true;
             ticTacToVisual.NodeUpdate(nodeNumber,MapNode.User);
-        }        
+        }  else if (sushiNode != MapNode.None) {
+            isSelected = true;
+        }
     }
 }

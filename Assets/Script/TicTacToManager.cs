@@ -4,16 +4,23 @@ using UnityEngine;
 
 public class TicTacToManager : MonoBehaviour
 {
+    public int gameMode = 4;            //3 = 3x3, 4 = 4x4
     public TicTacToVisual ticTacToVisual;
     public TicTacToMap ticTacToMap;
-    public int gameMode;
+    //얘만 퍼블릭
+    
     public int gameTern;
     public GameState gamePlayState;
     public MapNode[,] mapState;
 
-
+    public int GameMode { get { return gameMode; } set { gameMode = value; } }
+    public int GameTurn { get { return gameTern; } set { gameTern = value; } }
 
     public GameState GamePlayState { get { return gamePlayState; } }
+
+
+
+
 
     public void ResetGame () {
         gamePlayState = GameState.Play;
@@ -23,10 +30,9 @@ public class TicTacToManager : MonoBehaviour
         Debug.Log("reset");
     }
 
-    public int GameTurn { get { return gameTern; } set { gameTern = value; } }
+    
 
-
-    public int GameMode { get { return gameMode; } set { gameMode = value; } }
+    
     
     public GameState GameResult(MapNode[] mapState) {
         MapNode result;
@@ -124,7 +130,7 @@ public class TicTacToManager : MonoBehaviour
             if (mapState[0, 0] != mapState[i, i]) {
                 findWinnerX = false;
             }
-            if (mapState[0,gameMode-1] != mapState[i, gameMode - 1 - i]){
+            if (mapState[0,gameMode - 1] != mapState[i, gameMode - (i+1)]){
                 findWinnerY = false;
             }
 
@@ -133,7 +139,7 @@ public class TicTacToManager : MonoBehaviour
             return mapState[0, 0];
         }
         else if (findWinnerY == true) {
-            return mapState[gameMode-1, gameMode-1];
+            return mapState[0, gameMode - 1];
         }
 
         //전부 실패시 : 

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 
 public class TicTacToAI {
+
+
+
     public TicTacToAI(TicTacToMap gameMap)
     {
 
@@ -12,11 +15,15 @@ public class TicTacToAI {
 
     public TicTacToMap tttBoard;//게임보드
     private int lookAheadLevel; //게임 레벨
-    public int LookAheadLevel { get { return lookAheadLevel; } set { lookAheadLevel = value; } }
+    
     public MapNode mapNode; // Node
 
     private int bestX;  //최적 X 좌표
     private int bestY;  //최적 Y 좌표
+
+    private int gameMode = 4;            //3 = 3x3, 4 = 4x4
+    public int GameMode { get { return gameMode; } set { gameMode = value; } }
+    public int LookAheadLevel { get { return lookAheadLevel; } set { lookAheadLevel = value; } }
 
     private void InitNode(){    //기본정보 초기화
     

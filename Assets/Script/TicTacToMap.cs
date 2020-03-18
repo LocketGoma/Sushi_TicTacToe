@@ -21,8 +21,8 @@ public class TreeNode {
 // "수" = Turn.
 public class TicTacToMap : MonoBehaviour {
 
-    [SerializeField] private TicTacToManager gameManager;
-    private int gameMode;           //게임모드 (3x3 or 4x4)    
+    [SerializeField] private TicTacToManager ticTacToeManager;
+    [SerializeField] private int gameMode = 4;           //게임모드 (3x3 or 4x4)    
     private MapNode [,] boardData;  //'맵 정보'
     private int moveCount;          //현재 움직일 수 있는 "수" 의 개수
     private GameState gamePlayState;//게임판 상태
@@ -38,19 +38,21 @@ public class TicTacToMap : MonoBehaviour {
     public int GameMode { get { return gameMode; } set { gameMode = value; } }
 
 
+    private void Start() {
+        gameMode = ticTacToeManager.GameMode;
+    }
+
     public TicTacToMap() {
-        boardData = new MapNode[3, 3];        
+        boardData = new MapNode[gameMode, gameMode];        
         nodePlayer = MapNode.User;
-        nodeAI = MapNode.AI;
-        gameMode = 3;
+        nodeAI = MapNode.AI;        
         gamePlayState = GameState.Play;
     }
     //깊-은 복사
     public TicTacToMap(TicTacToMap mapCopy){
-        boardData = new MapNode[3, 3];        
+        boardData = new MapNode[gameMode, gameMode];        
         nodePlayer = MapNode.User;
-        nodeAI = MapNode.AI;
-        gameMode = 3;
+        nodeAI = MapNode.AI;        
         gamePlayState = GameState.Init;
 
         boardData = mapCopy.boardData;        
@@ -59,6 +61,7 @@ public class TicTacToMap : MonoBehaviour {
         comLevel = mapCopy.comLevel;        
     }
     
+    /*
     public void InitBoard(int startCom, int moveCnt, int level) {
         moveCount = moveCnt;        //현재 "수" 를 저장
         nodePlayer = MapNode.User;
@@ -75,6 +78,7 @@ public class TicTacToMap : MonoBehaviour {
         moveCount = 0;
 
     }
+    */
     public void InitBoard() {
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;
@@ -112,13 +116,14 @@ public class TicTacToMap : MonoBehaviour {
         return boardData[input / gameMode, input % gameMode] == MapNode.None ? true : false;
     }
     private void DoMove(int x, int y, MapNode selected) {
+        Debug.Log(x + ":" + y);
         boardData[x, y] = selected;
        // prePos[moveCount].X = x;
        // prePos[moveCount].Y = y;
 
         moveCount++;
-        gameManager.gameTern = moveCount;
-        gamePlayState = gameManager.GameResult(boardData);
+        ticTacToeManager.gameTern = moveCount;
+        gamePlayState = ticTacToeManager.GameResult(boardData);
         if (gamePlayState != GameState.Play) {
             Debug.Log("gamePlayState : "+ gamePlayState);
         }

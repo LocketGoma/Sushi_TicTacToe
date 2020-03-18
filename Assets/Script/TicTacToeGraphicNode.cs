@@ -31,11 +31,10 @@ public class TicTacToeGraphicNode : MonoBehaviour
     }
     public void ClickNode() {
         Debug.Log(sushiNode);
-        if (isSelected == false && sushiNode == MapNode.None) {
-            isSelected = true;
+        if (sushiNode == MapNode.None) {            
             ticTacToVisual.NodeUpdate(nodeNumber,MapNode.User);
-        }  else if (sushiNode != MapNode.None) {
+        }  /* else if (sushiNode != MapNode.None) {
             isSelected = true;
-        }
+        }*/
     }
 }

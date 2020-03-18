@@ -20,20 +20,12 @@ public class TreeNode {
 // GameBoard 3x3, 4x4 게임은 상속시켜서 만드는거로.
 // "수" = Turn.
 public class TicTacToMap : MonoBehaviour {
-    public enum GameState {
-        WinUser = 3,        //유저승리
-        WinAI = 4,          //AI승리
-        Draw = 5,           //비김
-        End = 6,            //그 외 게임 종료
-        Play = 7,           //게임진행중
-        Init = 8,           //초기화
-        Stop = 9            //일시정지
-    }
-    private int gameMode;           //게임모드 (3x3 or 4x4)
-    private Position [] prePos;        //이전 선택위치 저장... 배열이요?
-    private MapNode [,] boardData;       //'맵 정보'
+
+    [SerializeField] private TicTacToManager gameManager;
+    private int gameMode;           //게임모드 (3x3 or 4x4)    
+    private MapNode [,] boardData;  //'맵 정보'
     private int moveCount;          //현재 움직일 수 있는 "수" 의 개수
-    private GameState gamePlayState;      //게임판 상태
+    private GameState gamePlayState;//게임판 상태
     private int comLevel;           //AI 레벨
     private MapNode nodePlayer;     //플레이어 노드 번호 (판 표시 번호)
     private MapNode nodeAI;         //AI 노드 번호      (판 표시 번호, O/X같은 포지션)
@@ -47,8 +39,7 @@ public class TicTacToMap : MonoBehaviour {
 
 
     public TicTacToMap() {
-        boardData = new MapNode[3, 3];
-        prePos = new Position[9];
+        boardData = new MapNode[3, 3];        
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;
         gameMode = 3;
@@ -56,19 +47,16 @@ public class TicTacToMap : MonoBehaviour {
     }
     //깊-은 복사
     public TicTacToMap(TicTacToMap mapCopy){
-        boardData = new MapNode[3, 3];
-        prePos = new Position[9];
+        boardData = new MapNode[3, 3];        
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;
         gameMode = 3;
         gamePlayState = GameState.Init;
 
-        boardData = mapCopy.boardData;
-        prePos = mapCopy.prePos;
+        boardData = mapCopy.boardData;        
         moveCount = mapCopy.moveCount;
         gamePlayState = mapCopy.gamePlayState;
-        comLevel = mapCopy.comLevel;
-        
+        comLevel = mapCopy.comLevel;        
     }
     
     public void InitBoard(int startCom, int moveCnt, int level) {
@@ -78,6 +66,29 @@ public class TicTacToMap : MonoBehaviour {
         comLevel = level;
 
         gamePlayState = GameState.Play;
+
+        for (int i = 0; i < gameMode; i++) {
+            for (int j = 0; j < gameMode; j++) {
+                boardData[i, j] = MapNode.None;
+            }
+        }
+        moveCount = 0;
+
+    }
+    public void InitBoard() {
+        nodePlayer = MapNode.User;
+        nodeAI = MapNode.AI;
+
+
+        gamePlayState = GameState.Play;
+
+        for (int i = 0; i < gameMode; i++) {
+            for (int j = 0; j < gameMode; j++) {
+                boardData[i, j] = MapNode.None;
+            }
+        }
+        moveCount = 0;
+
     }
 
     //무르기용? 일단 임시용으로 만들어줘야지.
@@ -106,6 +117,11 @@ public class TicTacToMap : MonoBehaviour {
        // prePos[moveCount].Y = y;
 
         moveCount++;
+        gameManager.gameTern = moveCount;
+        gamePlayState = gameManager.GameResult(boardData);
+        if (gamePlayState != GameState.Play) {
+            Debug.Log("gamePlayState : "+ gamePlayState);
+        }
         GameEndCheck();
     }
 

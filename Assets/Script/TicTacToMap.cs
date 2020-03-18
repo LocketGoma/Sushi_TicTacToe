@@ -40,17 +40,16 @@ public class TicTacToMap : MonoBehaviour {
 
     private void Start() {
         gameMode = ticTacToeManager.GameMode;
+        boardData = new MapNode[gameMode, gameMode];
     }
 
-    public TicTacToMap() {
-        boardData = new MapNode[gameMode, gameMode];        
+    public TicTacToMap() {           
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;        
         gamePlayState = GameState.Play;
     }
     //깊-은 복사
-    public TicTacToMap(TicTacToMap mapCopy){
-        boardData = new MapNode[gameMode, gameMode];        
+    public TicTacToMap(TicTacToMap mapCopy){          
         nodePlayer = MapNode.User;
         nodeAI = MapNode.AI;        
         gamePlayState = GameState.Init;

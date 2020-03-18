@@ -91,7 +91,7 @@ public class TicTacToManager : MonoBehaviour
         MapNode [,] resultMapState;
         resultMapState = new MapNode[gameMode, gameMode];
 
-        for (int i = 0; i < gameMode* gameMode; i++) {
+        for (int i = 0; i < gameMode * gameMode; i++) {
             resultMapState[i / gameMode, i % gameMode] = mapState[i];
         }
         return resultMapState;
@@ -103,6 +103,7 @@ public class TicTacToManager : MonoBehaviour
         //X축 Y축 판독
         for (int i = 0; i < gameMode; i++) {
             for (int j = 1; j < gameMode; j++) {
+                Debug.Log("x:" + i + ", y:" + j);
                 if (mapState[i,0] != mapState[i,j]) {
                     findWinnerX = false;
                     break;

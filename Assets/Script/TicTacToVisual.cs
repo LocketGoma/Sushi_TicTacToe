@@ -19,14 +19,14 @@ public class TicTacToVisual : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        NodeArray = new GameObject[gameMode * gameMode];
         GameMode = ticTacToeManager.GameMode;
+        NodeArray = new GameObject[gameMode * gameMode];        
         tictactoGameMap = ticTacToeManager.GetComponent<TicTacToMap>();        
         //Debug.Log("NodeArray.Length : " + NodeArray.Length);
         
 
 
-        for (int i = 0; i < gameMode* gameMode ; i++) {
+        for (int i = 0; i < gameMode * gameMode ; i++) {
             Instantiate(baseNode).transform.parent = gameObject.transform;
 
             NodeArray[i] = transform.GetChild(i).gameObject;

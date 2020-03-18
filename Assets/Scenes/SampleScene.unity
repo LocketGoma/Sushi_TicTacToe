@@ -358,7 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c6ece3d640453d4ca679cbee5a782f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameMode: 4
+  gameMode: 5
   ticTacToVisual: {fileID: 528874212}
   ticTacToMap: {fileID: 444089107}
   gameTern: 0

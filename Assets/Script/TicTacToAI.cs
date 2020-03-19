@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 
 public class TicTacToAI {
-
-
+    //주요 내용 : 알파베타 가지치기 알고리즘.
+    //https://ko.wikipedia.org/wiki/%EC%95%8C%ED%8C%8C-%EB%B2%A0%ED%83%80_%EA%B0%80%EC%A7%80%EC%B9%98%EA%B8%B0
 
     public TicTacToAI(TicTacToMap gameMap)
     {
@@ -24,6 +24,17 @@ public class TicTacToAI {
     private int gameMode = 4;            //3 = 3x3, 4 = 4x4
     public int GameMode { get { return gameMode; } set { gameMode = value; } }
     public int LookAheadLevel { get { return lookAheadLevel; } set { lookAheadLevel = value; } }
+
+
+    //최종 결과값 리턴.
+    //외부에는 이 메소드만 호출되어야 함.
+    public int AnswerNode(MapNode [,] mapData) {
+
+
+
+        return 1;
+    }
+
 
     private void InitNode(){    //기본정보 초기화
     
@@ -56,10 +67,7 @@ public class TicTacToAI {
     
         return 1;
     }
-    private int GameEndCheck() {    //게임이 끝났는지 검사
 
-        return 0;
-    }
 
 
 

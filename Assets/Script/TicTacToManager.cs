@@ -29,10 +29,6 @@ public class TicTacToManager : MonoBehaviour
         ticTacToVisual.WinnerPopup(gamePlayState);
         Debug.Log("reset");
     }
-
-    
-
-    
     
     public GameState GameResult(MapNode[] mapState) {
         MapNode result;

@@ -103,8 +103,7 @@ public class TicTacToMap : MonoBehaviour {
             if (ticTacToAI == null || ticTacToAI.LookAheadLevel == 1) {
                 RandomMove();
             }
-            else {
-                Debug.Log("000");
+            else {                
                 InputMove(ticTacToAI.AnswerNode(boardData), MapNode.AI);
             }
         }

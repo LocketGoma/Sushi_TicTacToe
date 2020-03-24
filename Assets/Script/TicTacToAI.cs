@@ -47,7 +47,7 @@ public class TicTacToAI : MonoBehaviour {
         }
       //  Debug.Log("111");
         var answerPos = CacluateNode(mapData);
-      //  Debug.Log("callCount::" + callCount);
+        Debug.Log("callCount::" + callCount);
         callCount = 0;
         return answerPos.X * gameMode + answerPos.Y;
     }
@@ -61,8 +61,8 @@ public class TicTacToAI : MonoBehaviour {
         // Debug.Log("222");
 
         foreach (Position pos in positionList) {
-            var answer = FindMiniMax(pos, mapData, Int32.MinValue, Int32.MaxValue, false, 0);
-            Debug.Log("===================Pos:" + pos.X + "," + pos.Y + " ans:" + answer);
+            var answer = FindMiniMax(pos, mapData, Int32.MinValue, Int32.MaxValue, true, 0);
+            //Debug.Log("===================Pos:" + pos.X + "," + pos.Y + " ans:" + answer);
             if (answer > bestValue) {
                 bestValue = answer;
                 returnPos = pos;
@@ -93,21 +93,13 @@ public class TicTacToAI : MonoBehaviour {
     private int FindMiniMax(Position pos, MapNode[,] mapData, int alpha, int beta, bool isPlayer, int depth) {
         int bestValue = 0;
 
-//        Debug.Log("333");
-//        Debug.Log("depth" + depth);
-        if (pos == null || depth == lookAheadLevel || callCount > callCutline) {
-            if (isPlayer == true) {
-                bestValue = CalculateValueTTT(mapData, MapNode.User) - CalculateValueTTT(mapData, MapNode.AI);
-            } else {
-                bestValue = CalculateValueTTT(mapData, MapNode.AI) - CalculateValueTTT(mapData, MapNode.User);
-            }
-            callCount++;
-            return bestValue;
-        }
-        
-
+        //        Debug.Log("333");
+        //        Debug.Log("depth" + depth);
         MapNode[,] mapDataCopy = MapCopy(mapData);
         List<Position> nextPosition;
+        
+  
+
         if (isPlayer == true) {
             mapDataCopy[pos.X, pos.Y] = MapNode.User;
             bestValue = Int32.MaxValue;
@@ -115,9 +107,31 @@ public class TicTacToAI : MonoBehaviour {
             mapDataCopy[pos.X, pos.Y] = MapNode.AI;
             bestValue = Int32.MinValue;
         }
+
         nextPosition = GetPossibleMove(mapDataCopy);
 
-        foreach(Position nextPos in nextPosition) {            
+        if (nextPosition.Count == 0 || depth == lookAheadLevel || callCount > callCutline || WinnerCheckTTT(mapDataCopy, MapNode.None) != true) {
+            var pointUser = CalculateValueTTT(mapDataCopy, MapNode.User);
+            var pointAI = CalculateValueTTT(mapDataCopy, MapNode.AI);
+            if (isPlayer == true) {
+                bestValue = pointUser - pointAI;
+            }
+            else {
+                bestValue = pointAI - pointUser;
+            }
+            callCount++;
+            //Debug.Log("isPlayer?" + isPlayer + ",:" + bestValue+"\n"+ pointUser+":"+ pointAI);
+            return bestValue;
+        }
+
+
+
+        //Max 고를때 : 아래의 Min 값 중 Max값
+        //Min 고를때 : 아래의 Max 값 중 Min값
+        //현재가 Player 일때 = Min을 고름
+        //현재가 AI일때 = Max을 고름
+
+        foreach (Position nextPos in nextPosition) {            
            var value = FindMiniMax(nextPos, mapDataCopy, alpha, beta, isPlayer == false, depth + 1);
             if(isPlayer == true) {
                 bestValue = Math.Min(value, bestValue);
@@ -148,8 +162,13 @@ public class TicTacToAI : MonoBehaviour {
     }
     //Node별 추측값 계산기
     private int CalculateValueTTT(MapNode[,] mapData, MapNode mapNode) {  
+        if(WinnerCheckTTT(mapData, mapNode) == true) {
+            return 100;
+        }
+
         int result = 0;
         var copyMapData = MapCopy(mapData);
+
         for (int i = 0; i < gameMode; i++) {
             //X축 검사
             for (int j = 0; j < gameMode; j++) {

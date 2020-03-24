@@ -768,8 +768,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ticTacToManager: {fileID: 444089106}
   lookAheadLevel: 3
-  callCutline: 450
-  weightDiagonal: 5
+  callCutline: 4750
+  weightDiagonal: 1
 --- !u!1 &1221774824
 GameObject:
   m_ObjectHideFlags: 0

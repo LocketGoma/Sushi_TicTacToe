@@ -62,7 +62,7 @@ public class TicTacToAI : MonoBehaviour {
 
         foreach (Position pos in positionList) {
             var answer = FindMiniMax(pos, mapData, Int32.MinValue, Int32.MaxValue, true, 0);
-            //Debug.Log("===================Pos:" + pos.X + "," + pos.Y + " ans:" + answer);
+      //      Debug.Log("===================Pos:" + pos.X + "," + pos.Y + " ans:" + answer);
             if (answer > bestValue) {
                 bestValue = answer;
                 returnPos = pos;
@@ -107,8 +107,11 @@ public class TicTacToAI : MonoBehaviour {
             mapDataCopy[pos.X, pos.Y] = MapNode.AI;
             bestValue = Int32.MinValue;
         }
+        
 
         nextPosition = GetPossibleMove(mapDataCopy);
+
+        
 
         if (nextPosition.Count == 0 || depth == lookAheadLevel || callCount > callCutline || WinnerCheckTTT(mapDataCopy, MapNode.None) != true) {
             var pointUser = CalculateValueTTT(mapDataCopy, MapNode.User);
@@ -120,7 +123,7 @@ public class TicTacToAI : MonoBehaviour {
                 bestValue = pointAI - pointUser;
             }
             callCount++;
-            //Debug.Log("isPlayer?" + isPlayer + ",:" + bestValue+"\n"+ pointUser+":"+ pointAI);
+          //  Debug.Log("isPlayer?" + isPlayer + ",:" + bestValue+",depth"+depth+"\n"+ pointUser+":"+ pointAI);
             return bestValue;
         }
 
@@ -133,6 +136,7 @@ public class TicTacToAI : MonoBehaviour {
 
         foreach (Position nextPos in nextPosition) {            
            var value = FindMiniMax(nextPos, mapDataCopy, alpha, beta, isPlayer == false, depth + 1);
+           // Debug.Log("first best : " + bestValue);
             if(isPlayer == true) {
                 bestValue = Math.Min(value, bestValue);
                 beta = Math.Min(bestValue, beta);
@@ -140,7 +144,8 @@ public class TicTacToAI : MonoBehaviour {
                 bestValue = Math.Max(value, bestValue);
                 alpha = Math.Max(bestValue, alpha);
             }
-           // Debug.Log("A:" + alpha + ",B:" + beta);
+            // Debug.Log("A:" + alpha + ",B:" + beta);
+           // Debug.Log("second best : " + bestValue);
             if (beta <= alpha) {
                 break;
             }

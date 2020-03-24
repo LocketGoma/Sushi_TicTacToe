@@ -98,47 +98,60 @@ public class TicTacToManager : MonoBehaviour
 
         //X축 Y축 판독
         for (int i = 0; i < gameMode; i++) {
-            for (int j = 1; j < gameMode; j++) {
-                //Debug.Log("x:" + i + ", y:" + j);
-                if (mapState[i,0] != mapState[i,j]) {
-                    findWinnerX = false;
-                    break;
+            findWinnerX = true;
+            findWinnerY = true;
+            if (mapState[i, 0] != MapNode.None) {
+                for (int j = 1; j < gameMode; j++) {                    
+                    if (mapState[i, 0] != mapState[i, j]) {
+                        findWinnerX = false;
+                        break;
+                    }
                 }
+            } else {
+                findWinnerX = false;
             }
-            for (int k = 1; k < gameMode; k++) {
-                if (mapState[0,i] != mapState[k, i]) {
-                    findWinnerY = false;
-                    break;
+            if (mapState[0, i] != MapNode.None) {                
+                for (int k = 1; k < gameMode; k++) {
+                    if (mapState[0, i] != mapState[k, i]) {
+                        findWinnerY = false;
+                        break;
+                    }
                 }
+            } else {
+                findWinnerY = false;
             }
             if (findWinnerX == true) {
                 return mapState[i, 0];
             } else if(findWinnerY == true) {
                 return mapState[0, i];
-            } else {
-                findWinnerX = true;
-                findWinnerY = true;
-            }
+            } 
         }
+        findWinnerX = true;
+        findWinnerY = true;
         //대각선 판독
         //X - 정방향
         //Y - 역방향
-        for (int i = 1; i < gameMode; i++) {
-            if (mapState[0, 0] != mapState[i, i]) {
-                findWinnerX = false;
+        if (mapState[0, 0] != MapNode.None || mapState[0, gameMode - 1] != MapNode.None) {
+            for (int i = 1; i < gameMode; i++) {
+                if (mapState[0, 0] != mapState[i, i]) {
+                    findWinnerX = false;
+                }
+                if (mapState[0, gameMode - 1] != mapState[i, gameMode - (i + 1)]) {
+                    findWinnerY = false;
+                }
             }
-            if (mapState[0,gameMode - 1] != mapState[i, gameMode - (i+1)]){
-                findWinnerY = false;
-            }
+        } else {
+            findWinnerX = false;
+            findWinnerY = false;
         }
-        /*
-        if(findWinnerX || findWinnerY) {
-         Debug.Log(mapState[0, 0] + ":" + mapState[0, 1] + ":" + mapState[0, 2] + ":" + mapState[0, 3] + "\n" +
-        mapState[1, 0] + ":" + mapState[1, 1] + ":" + mapState[1, 2] + ":" + mapState[1, 3] + "\n" +
-        mapState[2, 0] + ":" + mapState[2, 1] + ":" + mapState[2, 2] + ":" + mapState[2, 3] + "\n" +
-        mapState[3, 0] + ":" + mapState[3, 1] + ":" + mapState[3, 2] + ":" + mapState[3, 3] + "\n");
-        }
-        */
+        
+        //if(findWinnerX || findWinnerY) {
+      //   Debug.Log(mapState[0, 0] + ":" + mapState[0, 1] + ":" + mapState[0, 2] + ":" + mapState[0, 3] + "\n" +
+      //  mapState[1, 0] + ":" + mapState[1, 1] + ":" + mapState[1, 2] + ":" + mapState[1, 3] + "\n" +
+      //  mapState[2, 0] + ":" + mapState[2, 1] + ":" + mapState[2, 2] + ":" + mapState[2, 3] + "\n" +
+      //  mapState[3, 0] + ":" + mapState[3, 1] + ":" + mapState[3, 2] + ":" + mapState[3, 3] + "\n");
+        //}
+        
 
 
         if (findWinnerX == true) {

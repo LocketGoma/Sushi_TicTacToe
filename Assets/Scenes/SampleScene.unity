@@ -358,7 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c6ece3d640453d4ca679cbee5a782f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameMode: 5
+  gameMode: 4
   ticTacToVisual: {fileID: 528874212}
   ticTacToMap: {fileID: 444089107}
   gameTern: 0
@@ -376,6 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ticTacToeManager: {fileID: 444089106}
+  ticTacToAI: {fileID: 1216183126}
   gameMode: 4
 --- !u!1 &519420028
 GameObject:
@@ -691,6 +692,7 @@ GameObject:
   - component: {fileID: 1216183125}
   - component: {fileID: 1216183124}
   - component: {fileID: 1216183123}
+  - component: {fileID: 1216183126}
   m_Layer: 0
   m_Name: TicTacToAI
   m_TagString: Untagged
@@ -752,6 +754,22 @@ RectTransform:
   m_AnchoredPosition: {x: 233.264, y: 478.85727}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1216183126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216183122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756bf149e7449dc4c9f50a2c086fd0c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ticTacToManager: {fileID: 444089106}
+  lookAheadLevel: 3
+  callCutline: 450
+  weightDiagonal: 5
 --- !u!1 &1221774824
 GameObject:
   m_ObjectHideFlags: 0

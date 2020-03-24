@@ -92,14 +92,14 @@ public class TicTacToManager : MonoBehaviour
         }
         return resultMapState;
     } 
-    private MapNode WinnerCheck(MapNode[,] mapState) {
+    public MapNode WinnerCheck(MapNode[,] mapState) {
         bool findWinnerX = true;
-        bool findWinnerY = true;
+        bool findWinnerY = true;    
 
         //X축 Y축 판독
         for (int i = 0; i < gameMode; i++) {
             for (int j = 1; j < gameMode; j++) {
-                Debug.Log("x:" + i + ", y:" + j);
+                //Debug.Log("x:" + i + ", y:" + j);
                 if (mapState[i,0] != mapState[i,j]) {
                     findWinnerX = false;
                     break;
@@ -130,8 +130,17 @@ public class TicTacToManager : MonoBehaviour
             if (mapState[0,gameMode - 1] != mapState[i, gameMode - (i+1)]){
                 findWinnerY = false;
             }
-
         }
+        /*
+        if(findWinnerX || findWinnerY) {
+         Debug.Log(mapState[0, 0] + ":" + mapState[0, 1] + ":" + mapState[0, 2] + ":" + mapState[0, 3] + "\n" +
+        mapState[1, 0] + ":" + mapState[1, 1] + ":" + mapState[1, 2] + ":" + mapState[1, 3] + "\n" +
+        mapState[2, 0] + ":" + mapState[2, 1] + ":" + mapState[2, 2] + ":" + mapState[2, 3] + "\n" +
+        mapState[3, 0] + ":" + mapState[3, 1] + ":" + mapState[3, 2] + ":" + mapState[3, 3] + "\n");
+        }
+        */
+
+
         if (findWinnerX == true) {
             return mapState[0, 0];
         }
@@ -146,27 +155,7 @@ public class TicTacToManager : MonoBehaviour
 
 
 }
-public class TicTacToNode {
-    private int depth;
-    private int eval;
-    private int childCnt;
 
-    public int Depth { get { return depth; } set { depth = value; } }            //노드 깊이
-    public int Evaluation { get { return eval; } set { eval = value; } }        //게임 평가값
-    public int ChildCount { get { return childCnt; } set { childCnt = value; } }//노드가 가지고 있는 자식 노드 개수
-
-    public TicTacToNode[] next;             // 자식 노드들
-
-    public TicTacToNode() {
-        next = new TicTacToNode[16];
-    }
-}
-public class Position {     //좌표 클래스
-    private int x;
-    private int y;
-    public int X { get { return x; } set { x = value; } }
-    public int Y { get { return y; } set { y = value; } }
-}
 
 public enum MapNode {
     None = 0,

@@ -30,7 +30,7 @@ public class TicTacToeGraphicNode : MonoBehaviour
         sushiNode = node;
     }
     public void ClickNode() {
-        Debug.Log(sushiNode);
+        //Debug.Log(sushiNode);
         if (sushiNode == MapNode.None) {            
             ticTacToVisual.NodeUpdate(nodeNumber,MapNode.User);
         }  /* else if (sushiNode != MapNode.None) {

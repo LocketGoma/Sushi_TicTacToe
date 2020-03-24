@@ -49,7 +49,7 @@ public class TicTacToVisual : MonoBehaviour
 
     public void NodeUpdate(int input, MapNode nodeType) {        
         tictactoGameMap.InputMove(input, nodeType);
-        tictactoGameMap.RandomMove();
+        tictactoGameMap.AIMove();        
         MapUpdate();
 
         WinnerPopup(ticTacToeManager.GamePlayState);

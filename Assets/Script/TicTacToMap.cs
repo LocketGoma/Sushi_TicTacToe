@@ -22,13 +22,17 @@ public class TreeNode {
 public class TicTacToMap : MonoBehaviour {
 
     [SerializeField] private TicTacToManager ticTacToeManager;
+    [SerializeField] private TicTacToAI ticTacToAI;
     [SerializeField] private int gameMode = 4;           //게임모드 (3x3 or 4x4)    
+    
+
     private MapNode [,] boardData;  //'맵 정보'
     private int moveCount;          //현재 움직일 수 있는 "수" 의 개수
     private GameState gamePlayState;//게임판 상태
     private int comLevel;           //AI 레벨
     private MapNode nodePlayer;     //플레이어 노드 번호 (판 표시 번호)
     private MapNode nodeAI;         //AI 노드 번호      (판 표시 번호, O/X같은 포지션)
+    
 
     //게임 상태 반환
     public GameState GamePlayState { get { return gamePlayState; } }
@@ -40,7 +44,7 @@ public class TicTacToMap : MonoBehaviour {
 
     private void Start() {
         gameMode = ticTacToeManager.GameMode;
-        boardData = new MapNode[gameMode, gameMode];
+        boardData = new MapNode[gameMode, gameMode];        
     }
 
     public TicTacToMap() {           
@@ -93,7 +97,19 @@ public class TicTacToMap : MonoBehaviour {
         moveCount = 0;
 
     }
+    public void AIMove() {
+        GameEndCheck();
+        if (gamePlayState != GameState.End) {
+            if (ticTacToAI == null || ticTacToAI.LookAheadLevel == 1) {
+                RandomMove();
+            }
+            else {
+                Debug.Log("000");
+                InputMove(ticTacToAI.AnswerNode(boardData), MapNode.AI);
+            }
+        }
 
+    }
     //무르기용? 일단 임시용으로 만들어줘야지.
     public void RandomMove() {
         if (GamePlayState == GameState.Play) {
@@ -115,7 +131,7 @@ public class TicTacToMap : MonoBehaviour {
         return boardData[input / gameMode, input % gameMode] == MapNode.None ? true : false;
     }
     private void DoMove(int x, int y, MapNode selected) {
-        Debug.Log(x + ":" + y);
+        //Debug.Log(x + ":" + y);
         boardData[x, y] = selected;
        // prePos[moveCount].X = x;
        // prePos[moveCount].Y = y;

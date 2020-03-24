@@ -17,42 +17,207 @@ public class TicTacToAI : MonoBehaviour {
     //http://musicdiary.egloos.com/v/4274653
     //Int32.MinValue;
     public TicTacToManager ticTacToManager;
-    private int lookAheadLevel; //게임 레벨
-    
-    public MapNode mapNode; // Node
+    [SerializeField] private int lookAheadLevel; //게임 레벨
+    [SerializeField] private int callCutline;
+    [Range(0,5)]
+    [SerializeField] private int weightDiagonal;
+
+    public TicTacToeNode tttNodeRoot; // 
+    private int callCount = 0;
 
 
-    private int gameMode = 4;            //3 = 3x3, 4 = 4x4
+    private int gameMode = 1;            //3 = 3x3, 4 = 4x4
     public int GameMode { get { return gameMode; } set { gameMode = value; } }
     public int LookAheadLevel { get { return lookAheadLevel; } set { lookAheadLevel = value; } }
 
 
     private void Start() {
         GameMode = ticTacToManager.GameMode;
+        if (callCutline == 0) {
+            callCutline = Int32.MaxValue;
+        }
     }
 
     //최종 결과값 리턴.
     //외부에는 이 메소드만 호출되어야 함.
-    public int AnswerNode(MapNode [,] mapData) {
-        Position[] positionList = new Position[gameMode * gameMode];
+    public int AnswerNode(MapNode[,] mapData) {
+        if (gameMode < 3 || gameMode > 5) {
+            Debug.LogError("게임 모드 범위 초과");
+            return -1;
+        }
+      //  Debug.Log("111");
+        var answerPos = CacluateNode(mapData);
+      //  Debug.Log("callCount::" + callCount);
+        callCount = 0;
+        return answerPos.X * gameMode + answerPos.Y;
+    }
+    private Position CacluateNode(MapNode[,] mapData) {
+        List<Position> positionList;
         int bestValue = Int32.MinValue;
-        int possibleCount = 0;
+        
+        tttNodeRoot = new TicTacToeNode(gameMode, 0);       //최초값 초기화.
+        positionList = GetPossibleMove(mapData);
+        Position returnPos = positionList[0];
+        // Debug.Log("222");
 
-        for (int i = 0; i < possibleCount; i++) {
+        foreach (Position pos in positionList) {
+            var answer = FindMiniMax(pos, mapData, Int32.MinValue, Int32.MaxValue, false, 0);
+            Debug.Log("===================Pos:" + pos.X + "," + pos.Y + " ans:" + answer);
+            if (answer > bestValue) {
+                bestValue = answer;
+                returnPos = pos;
+            }
+        }
+        Debug.Log("===================returnPos" + returnPos.X + "," + returnPos.Y);
+        return returnPos;
+    }
+    private List<Position> GetPossibleMove(MapNode[,] mapData) { // 현재 보드 상태에서 갈수 있는 좌표 개수 검사.
+        List<Position> nextPositions = new List<Position>();
+        if (mapData[0, 0] == MapNode.None) { nextPositions.Add(new Position(0, 0)); }
+        if (mapData[gameMode - 1, gameMode - 1] == MapNode.None) { nextPositions.Add(new Position(gameMode - 1, gameMode - 1)); }
+        if (mapData[0, gameMode - 1] == MapNode.None) { nextPositions.Add(new Position(0, gameMode - 1)); }
+        if (mapData[gameMode - 1, 0] == MapNode.None) { nextPositions.Add(new Position(gameMode - 1, 0)); }
 
 
+        for (int i = 0; i < gameMode; i++) {
+            for (int j = 0; j < gameMode; j++) {                
+                if (mapData[i, j] == MapNode.None && !((i==j && i==0) || (i==j && i==(gameMode - 1)))&&!((i==0&&j==gameMode-1) || (j == 0 && i == gameMode - 1))) {
+                    nextPositions.Add(new Position(i, j));
+                }
+            }
+        }
+        return nextPositions;
+    }
+    //isPlayer = true => User 차례 / isPlayer = false => AI 차례
+    //alpah = best // beta = worst
+    private int FindMiniMax(Position pos, MapNode[,] mapData, int alpha, int beta, bool isPlayer, int depth) {
+        int bestValue = 0;
 
+//        Debug.Log("333");
+//        Debug.Log("depth" + depth);
+        if (pos == null || depth == lookAheadLevel || callCount > callCutline) {
+            if (isPlayer == true) {
+                bestValue = CalculateValueTTT(mapData, MapNode.User) - CalculateValueTTT(mapData, MapNode.AI);
+            } else {
+                bestValue = CalculateValueTTT(mapData, MapNode.AI) - CalculateValueTTT(mapData, MapNode.User);
+            }
+            callCount++;
+            return bestValue;
+        }
+        
 
+        MapNode[,] mapDataCopy = MapCopy(mapData);
+        List<Position> nextPosition;
+        if (isPlayer == true) {
+            mapDataCopy[pos.X, pos.Y] = MapNode.User;
+            bestValue = Int32.MaxValue;
+        } else { 
+            mapDataCopy[pos.X, pos.Y] = MapNode.AI;
+            bestValue = Int32.MinValue;
+        }
+        nextPosition = GetPossibleMove(mapDataCopy);
+
+        foreach(Position nextPos in nextPosition) {            
+           var value = FindMiniMax(nextPos, mapDataCopy, alpha, beta, isPlayer == false, depth + 1);
+            if(isPlayer == true) {
+                bestValue = Math.Min(value, bestValue);
+                beta = Math.Min(bestValue, beta);
+            } else {
+                bestValue = Math.Max(value, bestValue);
+                alpha = Math.Max(bestValue, alpha);
+            }
+           // Debug.Log("A:" + alpha + ",B:" + beta);
+            if (beta <= alpha) {
+                break;
+            }
+        }
+        
+        
+        return bestValue;
+    }
+    private MapNode[,] MapCopy(MapNode[,] mapData) {
+        MapNode[,] copyMap;
+        copyMap = new MapNode[gameMode, gameMode];
+        for (int i = 0; i < gameMode; i++) {
+            for (int j = 0; j < gameMode; j++) {
+                copyMap[i, j] = mapData[i, j];
+            }
         }
 
-
-
-        return 1;
+        return copyMap;
     }
+    //Node별 추측값 계산기
+    private int CalculateValueTTT(MapNode[,] mapData, MapNode mapNode) {  
+        int result = 0;
+        var copyMapData = MapCopy(mapData);
+        for (int i = 0; i < gameMode; i++) {
+            //X축 검사
+            for (int j = 0; j < gameMode; j++) {
+                if (copyMapData[i, j] == MapNode.None) {
+                    copyMapData[i, j] = mapNode;
+                }
+            }
+            if (WinnerCheckTTT(copyMapData, mapNode) == true) {
+                result++;
+            }
+            copyMapData = MapCopy(mapData);
+
+            //Y축 검사
+            for (int j = 0; j < gameMode; j++) {
+                if (copyMapData[j, i] == MapNode.None) {
+                    copyMapData[j, i] = mapNode;
+                }
+            }
+            if (WinnerCheckTTT(copyMapData, mapNode) == true) {
+                result++;
+            }
+            copyMapData = MapCopy(mapData);
+        }
+        //대각선 검사 1
+        for (int i = 0; i < gameMode; i++) {
+            if (copyMapData[i, i]==MapNode.None) {
+                copyMapData[i, i] = mapNode;
+            }
+        }
+        if (WinnerCheckTTT(copyMapData, mapNode) == true) {
+            if (mapNode == MapNode.User) {
+                result = +(weightDiagonal * weightDiagonal);  //대각선 가중치
+            } else {
+                result++;
+            }
+        }
+        copyMapData = MapCopy(mapData);
+
+        //대각선 검사 2
+        for (int i = 0; i < gameMode; i++) {
+            if (copyMapData[gameMode - (i+1), i] == MapNode.None) {
+                copyMapData[gameMode - (i+1), i] = mapNode;
+            }
+        }
+        if (WinnerCheckTTT(copyMapData, mapNode) == true) {
+            if (mapNode == MapNode.User) {
+                result = +(weightDiagonal * weightDiagonal);  //대각선 가중치
+            }
+            else {
+                result++;
+            }
+        }
+
+        //Debug.Log(mapNode+"Res:" + result);
+
+        return result;
+    }
+    private bool WinnerCheckTTT(MapNode[,] mapData, MapNode mapNode) {
+        return ticTacToManager.WinnerCheck(mapData) == mapNode ? true : false;
+    }
+    
 
 
-    private void InitNode(){    //기본정보 초기화
-        
+
+
+
+    /*
+    private void InitNode(){    //기본정보 초기화        
 
     }
     private void GetBestMove(){     //최적 좌표 구하기
@@ -78,12 +243,52 @@ public class TicTacToAI : MonoBehaviour {
 
         return 1;
     }
-    private int GetPossibleMove(){ // 현재 보드 상태에서 갈수 있는 좌표 개수 검사.
-    
-        return 1;
+
+    */
+}
+
+
+
+
+public class TicTacToeNode {
+    private int depth;
+    private int eval;
+    private int childCnt;
+
+    public int Depth { get { return depth; } set { depth = value; } }           //노드 깊이 ( = 레벨)
+    public int Evaluation { get { return eval; } set { eval = value; } }        //게임 평가값
+    public int ChildCount { get { return childCnt; } set { childCnt = value; } }//노드가 가지고 있는 자식 노드 개수
+
+    public TicTacToeNode[] next;             // 자식 노드들
+
+
+    /*
+    public void InitNode(int gameMode, int inDepth) {           //= 생성자 포지션.
+        Depth = inDepth;
+        Evaluation = 0;
+        ChildCount = 0;
+
+        next = new TicTacToeNode[gameMode * gameMode];
     }
+    */
+    public TicTacToeNode(int gameMode, int inDepth) {           //생성자 / 초기화
+        Depth = inDepth;
+        Evaluation = 0;
+        ChildCount = 0;
 
+        next = new TicTacToeNode[gameMode * gameMode];
+    }
+}
 
+public class Position {     //좌표 클래스
+    private int x;
+    private int y;
 
-
+    public Position() {;}
+    public Position(int inx, int iny) {
+        x = inx;
+        y = iny;
+    }
+    public int X { get { return x; } set { x = value; } }
+    public int Y { get { return y; } set { y = value; } }
 }

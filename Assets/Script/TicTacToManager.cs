@@ -12,15 +12,12 @@ public class TicTacToManager : MonoBehaviour
     public int gameTern;
     public GameState gamePlayState;
     public MapNode[,] mapState;
-
+    public float times = 2.5f;
     public int GameMode { get { return gameMode; } set { gameMode = value; } }
     public int GameTurn { get { return gameTern; } set { gameTern = value; } }
+    public float GameTime {get { return times; } }
 
     public GameState GamePlayState { get { return gamePlayState; } }
-
-
-
-
 
     public void ResetGame () {
         gamePlayState = GameState.Play;
@@ -133,14 +130,15 @@ public class TicTacToManager : MonoBehaviour
         //Y - 역방향
         if (mapState[0, 0] != MapNode.None || mapState[0, gameMode - 1] != MapNode.None) {
             for (int i = 1; i < gameMode; i++) {
-                if (mapState[0, 0] != mapState[i, i]) {
+                if (mapState[0, 0] != mapState[i, i] || mapState[0, 0] == MapNode.None) {
                     findWinnerX = false;
                 }
-                if (mapState[0, gameMode - 1] != mapState[i, gameMode - (i + 1)]) {
+                if (mapState[0, gameMode - 1] != mapState[i, gameMode - (i + 1)] || mapState[0, gameMode - 1] == MapNode.None) {
                     findWinnerY = false;
                 }
             }
-        } else {
+        }
+        else {
             findWinnerX = false;
             findWinnerY = false;
         }
@@ -176,9 +174,9 @@ public enum MapNode {
     AI = 2
 } // Node Data enum
 public enum GameState {
-    WinUser = 1,        //유저승리
-    WinAI = 2,          //AI승리
-    Draw = 3,           //비김
+    WinAI = 1,          //AI승리    
+    Draw = 2,           //비김    
+    WinUser = 3,        //유저승리
     End = 4,            //그 외 게임 종료
     Play = 5,           //게임진행중
     Init = 6,           //초기화

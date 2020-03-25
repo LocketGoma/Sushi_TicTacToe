@@ -30,8 +30,7 @@ public class TicTacToMap : MonoBehaviour {
     private int moveCount;          //현재 움직일 수 있는 "수" 의 개수
     private GameState gamePlayState;//게임판 상태
     private int comLevel;           //AI 레벨
-    private MapNode nodePlayer;     //플레이어 노드 번호 (판 표시 번호)
-    private MapNode nodeAI;         //AI 노드 번호      (판 표시 번호, O/X같은 포지션)
+
     
 
     //게임 상태 반환
@@ -47,15 +46,11 @@ public class TicTacToMap : MonoBehaviour {
         boardData = new MapNode[gameMode, gameMode];        
     }
 
-    public TicTacToMap() {           
-        nodePlayer = MapNode.User;
-        nodeAI = MapNode.AI;        
+    public TicTacToMap() {             
         gamePlayState = GameState.Play;
     }
     //깊-은 복사
-    public TicTacToMap(TicTacToMap mapCopy){          
-        nodePlayer = MapNode.User;
-        nodeAI = MapNode.AI;        
+    public TicTacToMap(TicTacToMap mapCopy){
         gamePlayState = GameState.Init;
 
         boardData = mapCopy.boardData;        
@@ -83,10 +78,6 @@ public class TicTacToMap : MonoBehaviour {
     }
     */
     public void InitBoard() {
-        nodePlayer = MapNode.User;
-        nodeAI = MapNode.AI;
-
-
         gamePlayState = GameState.Play;
 
         for (int i = 0; i < gameMode; i++) {

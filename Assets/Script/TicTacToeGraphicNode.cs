@@ -31,7 +31,8 @@ public class TicTacToeGraphicNode : MonoBehaviour
     }
     public void ClickNode() {
         //Debug.Log(sushiNode);
-        if (sushiNode == MapNode.None) {            
+        if (sushiNode == MapNode.None) {
+            
             ticTacToVisual.NodeUpdate(nodeNumber,MapNode.User);
         }  /* else if (sushiNode != MapNode.None) {
             isSelected = true;

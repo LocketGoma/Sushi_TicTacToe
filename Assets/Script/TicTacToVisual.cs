@@ -33,9 +33,7 @@ public class TicTacToVisual : MonoBehaviour
 
             NodeArray[i].GetComponent<TicTacToeGraphicNode>().NodeNumber = i;
         }
-
         gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObject.GetComponent<GridLayoutGroup>().cellSize.x * gameMode, gameObject.GetComponent<GridLayoutGroup>().cellSize.y * gameMode);
-
     }
 
 
@@ -49,9 +47,9 @@ public class TicTacToVisual : MonoBehaviour
 
     public void NodeUpdate(int input, MapNode nodeType) {        
         tictactoGameMap.InputMove(input, nodeType);
-        tictactoGameMap.AIMove();        
+        tictactoGameMap.AIMove();
         MapUpdate();
-
+        ticTacToeManager.RefillForceSelectTimer();
         WinnerPopup(ticTacToeManager.GamePlayState);
     }
     public void WinnerPopup(GameState gameState) { 

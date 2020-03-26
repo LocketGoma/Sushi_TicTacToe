@@ -1,23 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TicTacToManager : MonoBehaviour
 {
     public int gameMode = 4;            //3 = 3x3, 4 = 4x4
     public TicTacToVisual ticTacToVisual;
     public TicTacToMap ticTacToMap;
+    [SerializeField] private Text timertext;
     //얘만 퍼블릭
-    
+
     public int gameTern;
     public GameState gamePlayState;
     public MapNode[,] mapState;
-    public float times = 2.5f;
+    public float times = 1.5f;
+    [SerializeField] private float remainTimes;    
     public int GameMode { get { return gameMode; } set { gameMode = value; } }
     public int GameTurn { get { return gameTern; } set { gameTern = value; } }
     public float GameTime {get { return times; } }
 
     public GameState GamePlayState { get { return gamePlayState; } }
+
+    private void Start() {
+        remainTimes = times * 1000 * 1000;
+    }
 
     public void ResetGame () {
         gamePlayState = GameState.Play;
@@ -161,6 +168,22 @@ public class TicTacToManager : MonoBehaviour
 
         //전부 실패시 : 
         return MapNode.None;
+    }
+
+    public void ForceSelectTimer(float tickUsec) {
+        Debug.Log("times : " + remainTimes/1000);
+        System.DateTime dt = System.DateTime.MinValue + System.TimeSpan.FromMilliseconds(remainTimes / 1000.0);
+        timertext.text = dt.ToString("ss:ff");
+        remainTimes -= tickUsec;
+        if (remainTimes <= 0) {
+            ticTacToMap.RandomMove(MapNode.User);
+            ticTacToMap.AIMove();
+            ticTacToVisual.MapUpdate();
+            remainTimes += times * 1000 * 1000;
+        }
+    }
+    public void RefillForceSelectTimer() {
+        remainTimes = times * 1000 * 1000; ;
     }
 
 

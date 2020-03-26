@@ -22,6 +22,7 @@ public class TreeNode {
 public class TicTacToMap : MonoBehaviour {
 
     [SerializeField] private TicTacToManager ticTacToeManager;
+    [SerializeField] private TicTacToVisual tictiatoeVisusal;
     [SerializeField] private TicTacToAI ticTacToAI;
     [SerializeField] private int gameMode = 4;           //게임모드 (3x3 or 4x4)    
     
@@ -86,13 +87,18 @@ public class TicTacToMap : MonoBehaviour {
             }
         }
         moveCount = 0;
-
     }
+    private void Update() {
+        if (GamePlayState == GameState.Play) {
+            ticTacToeManager.ForceSelectTimer((float)Time.deltaTime*1000*1000);
+        }
+    }
+
     public void AIMove() {
         GameEndCheck();
         if (gamePlayState != GameState.End) {
-            if (ticTacToAI == null || ticTacToAI.LookAheadLevel == 1) {
-                RandomMove();
+            if (ticTacToAI == null || ticTacToAI.LookAheadLevel == 0) {
+                RandomMove(MapNode.AI);
             }
             else {                
                 InputMove(ticTacToAI.AnswerNode(boardData), MapNode.AI);
@@ -101,7 +107,7 @@ public class TicTacToMap : MonoBehaviour {
 
     }
     //무르기용? 일단 임시용으로 만들어줘야지.
-    public void RandomMove() {
+    public void RandomMove(MapNode input) {
         if (GamePlayState == GameState.Play) {
             int randomInput = UnityEngine.Random.Range(0, gameMode * gameMode);
 
@@ -109,13 +115,14 @@ public class TicTacToMap : MonoBehaviour {
             while (CheckMove(randomInput) == false) {
                 randomInput = UnityEngine.Random.Range(0, gameMode * gameMode);
             }
-            InputMove(randomInput, MapNode.AI);
+            InputMove(randomInput, input);
         }
     }
     public void InputMove(int input, MapNode selected) {
         if (GamePlayState == GameState.Play) {
             DoMove(input / gameMode, input % gameMode, selected);
-        }        
+        }                  
+        tictiatoeVisusal.MapUpdate();
     }
     private bool CheckMove(int input) {
         return boardData[input / gameMode, input % gameMode] == MapNode.None ? true : false;
